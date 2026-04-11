@@ -39,6 +39,7 @@ let package = Package(
       dependencies: [
         "Textual",
         .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+        .product(name: "SwiftUIMath", package: "swiftui-math"),
       ],
       exclude: [
         "Internal/TextInteraction/__Snapshots__",
