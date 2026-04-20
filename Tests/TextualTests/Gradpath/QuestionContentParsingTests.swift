@@ -148,17 +148,15 @@ struct QuestionContentParsingTests {
     #expect(Self.imageURLs(in: attributed).count == 4)
   }
 
-  @Test func parsesRepresentativeQuestionOptionWithMathAndRemoteImage() throws {
+  @Test func parsesRepresentativeQuestionStemWithMathAndLocalImage() throws {
     guard Self.hasRequiredCMSFixtures else { return }
     let question = try Self.loadQuestion(sourceId: "506eaa73-47f9-4a54-a86a-5251fcd01ba1")
-    #expect(question.options.count > 1)
-    let option = question.options[1]
-    let attributed = try Self.makeContentParser().attributedString(for: option)
+    let attributed = try Self.makeContentParser().attributedString(for: question.stem)
     let urls = Self.imageURLs(in: attributed)
 
-    #expect(Self.mathAttachments(in: attributed).count == 1)
+    #expect(Self.mathAttachments(in: attributed).count >= 3)
     #expect(urls.count == 1)
-    #expect(urls.first?.absoluteString.contains("cdn.mathpix.com") == true)
+    #expect(urls.first?.lastPathComponent == "q506eaa73_img0_6c285c58.png")
   }
 
   @Test func parsesRepresentativeQuestionStemWithMarkdownTables() throws {

@@ -11,8 +11,12 @@ extension StructuredText {
     }
 
     var body: some View {
-      content
-        .frame(maxWidth: .infinity, alignment: alignment)
+      Overflow { state in
+        content
+          .fixedSize(horizontal: true, vertical: true)
+          .frame(minWidth: state.containerWidth, alignment: alignment)
+      }
+      .environment(\.overflowMode, .scroll)
         .layoutValue(key: BlockAlignmentKey.self, value: mathProperties.textAlignment)
     }
 

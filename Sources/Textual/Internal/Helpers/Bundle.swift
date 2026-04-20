@@ -24,7 +24,8 @@ extension Bundle {
     #endif
 
     let candidates =
-      overrides + [
+      overrides
+      + [
         // Bundle should be present here when the package is linked into an App.
         Bundle.main.resourceURL,
 
@@ -33,11 +34,25 @@ extension Bundle {
 
         // For command-line tools.
         Bundle.main.bundleURL,
+
+        // SwiftPM tests often place the resource bundle next to the test runner bundle.
+        Bundle(for: Token.self).bundleURL,
       ]
 
+    var searchDirectories: [URL] = []
     for candidate in candidates {
-      let bundlePath = candidate?.appendingPathComponent(bundleName + ".bundle")
-      if let bundle = bundlePath.flatMap(Bundle.init(url:)) {
+      guard let candidate else { continue }
+      var current = candidate
+
+      for _ in 0..<4 {
+        searchDirectories.append(current)
+        current.deleteLastPathComponent()
+      }
+    }
+
+    for directory in searchDirectories {
+      let bundlePath = directory.appendingPathComponent(bundleName + ".bundle")
+      if let bundle = Bundle(url: bundlePath) {
         return bundle
       }
     }
