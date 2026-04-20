@@ -75,12 +75,15 @@ extension Text {
       }
 
       if let key, let size = attachmentSizes[key] {
+        let baselineOffset = key.attachment.baselineOffset(in: runEnvironment)
+
         // Create placeholder
         text = Text(placeholderSize: size)
-          .baselineOffset(key.attachment.baselineOffset(in: runEnvironment))
+          .baselineOffset(baselineOffset)
           .customAttribute(
             AttachmentAttribute(
               key.attachment,
+              baselineOffset: baselineOffset,
               presentationIntent: run.presentationIntent
             )
           )

@@ -47,6 +47,23 @@
 
         assertSnapshot(of: view, as: .image(layout: layout))
       }
+
+      @Test func displayMathBaselineCompensation() {
+        let view = StructuredText(
+          markdown: """
+            已知有界区域 $\\Omega$ 由下式围成：
+
+            $$\\iiint_{\\Omega} f(x^2+y^2+z^2)\\, dV$$
+
+            则结果应保持完整显示，不应被裁到首行之外。
+            """,
+          syntaxExtensions: [.math]
+        )
+        .background(Color.guide)
+        .padding(.horizontal)
+
+        assertSnapshot(of: view, as: .image(layout: layout))
+      }
     }
   }
 #endif

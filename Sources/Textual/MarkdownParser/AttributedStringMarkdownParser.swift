@@ -106,8 +106,9 @@ extension AttributedStringMarkdownParser {
     into store: inout [(latex: String, isBlock: Bool)]
   ) -> String {
     // Combined ICU pattern: block ($$...$$) is listed first so $$ is never consumed by the
-    // inline branch. (?s) makes `.` match newlines for multi-line block formulas.
-    let pattern = #"(?s)\$\$(.+?)\$\$|\$(?!\$)((?:\\\$|[^\$\n])+)\$"#
+    // inline branch. (?s) makes `.` match newlines so we can preserve multi-line inline math
+    // content such as `$\\begin{cases} ... \\end{cases}$`, which is valid in LaTeX-style math.
+    let pattern = #"(?s)\$\$(.+?)\$\$|\$(?!\$)((?:\\\$|[^\$])+)\$"#
     guard let regex = try? NSRegularExpression(pattern: pattern) else { return source }
 
     var result = ""

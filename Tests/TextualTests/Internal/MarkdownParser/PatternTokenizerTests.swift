@@ -159,6 +159,34 @@ struct PatternTokenizerTests {
     )
   }
 
+  @Test func inlineMathSupportsMultilineCases() throws {
+    // given
+    let tokenizer = PatternTokenizer(patterns: [.mathBlock, .mathInline])
+
+    // when
+    let tokens = try tokenizer.tokenize(
+      """
+      设直线 $\\begin{cases}
+      x=0,\\\\
+      y=0
+      \\end{cases}$ 绕轴旋转
+      """
+    )
+
+    // then
+    #expect(
+      tokens == [
+        .init(type: .text, content: "设直线 "),
+        .init(
+          type: .mathInline,
+          content: "$\\begin{cases}\nx=0,\\\\\ny=0\n\\end{cases}$",
+          capturedContent: "\\begin{cases}\nx=0,\\\\\ny=0\n\\end{cases}"
+        ),
+        .init(type: .text, content: " 绕轴旋转"),
+      ]
+    )
+  }
+
   @Test func blockMath() throws {
     // given
     let tokenizer = PatternTokenizer(patterns: [.mathBlock, .mathInline])

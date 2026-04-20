@@ -3,7 +3,6 @@ import SwiftUI
 extension StructuredText {
   struct MathBlock: View {
     @Environment(\.paragraphStyle) private var paragraphStyle
-    @Environment(\.mathProperties) private var mathProperties
 
     private let content: AttributedSubstring
 
@@ -19,12 +18,18 @@ extension StructuredText {
       let resolvedStyle = paragraphStyle.resolve(configuration: configuration)
 
       AnyView(resolvedStyle)
-        .layoutValue(key: BlockAlignmentKey.self, value: mathProperties.textAlignment)
     }
 
+    @ViewBuilder
     private var label: some View {
-      WithInlineStyle(AttributedString(content)) {
-        TextFragment($0)
+      if let attachment = content.attachments().first?.base as? MathAttachment {
+        MathDisplayBlock {
+          attachment.body
+        }
+      } else {
+        WithInlineStyle(AttributedString(content)) {
+          TextFragment($0)
+        }
       }
     }
 

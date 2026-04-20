@@ -15,10 +15,16 @@ import SwiftUI
 
 struct AttachmentAttribute: TextAttribute {
   var attachment: AnyAttachment
+  var baselineOffset: CGFloat
   var presentationIntent: PresentationIntent?
 
-  init(_ attachment: AnyAttachment, presentationIntent: PresentationIntent?) {
+  init(
+    _ attachment: AnyAttachment,
+    baselineOffset: CGFloat = 0,
+    presentationIntent: PresentationIntent?
+  ) {
     self.attachment = attachment
+    self.baselineOffset = baselineOffset
     self.presentationIntent = presentationIntent
   }
 }
@@ -30,5 +36,9 @@ extension Text.Layout.Run {
 
   var attachmentPresentationIntent: PresentationIntent? {
     self[AttachmentAttribute.self]?.presentationIntent
+  }
+
+  var attachmentBaselineOffset: CGFloat {
+    self[AttachmentAttribute.self]?.baselineOffset ?? 0
   }
 }

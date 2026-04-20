@@ -115,5 +115,25 @@ extension AttributedStringMarkdownParser {
       // then
       #expect(output == expected)
     }
+
+    @MainActor
+    @Test func parserPreservesMultilineInlineMathAsSingleAttachment() throws {
+      // given
+      let parser = AttributedStringMarkdownParser(baseURL: nil, syntaxExtensions: [.math])
+      let input = """
+        设直线 $\\begin{cases}
+        x=0,\\\\
+        y=0
+        \\end{cases}$ 绕轴旋转
+        """
+
+      // when
+      let attributed = try parser.attributedString(for: input)
+      let attachments = attributed.attachments()
+
+      // then
+      #expect(attachments.count == 1)
+      #expect(attachments.first?.description == "$\\begin{cases}\nx=0,\\\\\ny=0\n\\end{cases}$")
+    }
   }
 }

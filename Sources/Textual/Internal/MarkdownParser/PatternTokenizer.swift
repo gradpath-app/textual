@@ -90,7 +90,7 @@ extension PatternTokenizer.Pattern {
   }
 
   static var mathInline: Self {
-    .init(regex: /\$(?!\$)((?:\\\$|[^$\n])+)\$/, tokenType: .mathInline)
+    .init(regex: /(?s)\$(?!\$)((?:\\\$|[^$])+)\$/, tokenType: .mathInline)
   }
 }
 

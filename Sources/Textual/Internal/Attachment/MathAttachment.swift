@@ -33,17 +33,18 @@ struct MathAttachment: Attachment {
   }
 
   func baselineOffset(in environment: TextEnvironmentValues) -> CGFloat {
-    // Shift the placeholder image DOWN by `descent` so that the math formula's TeX baseline
-    // (rendered at `ascent` from the canvas top, i.e. `descent` from the canvas bottom) aligns
-    // with the surrounding text's baseline.
-    //
-    // If inline math appears too high relative to surrounding text, the likely cause is that
-    // SwiftUI's Text.Layout.Run.typographicBounds does not account for baselineOffset when
-    // reporting run bounds to AttachmentView. In that case AttachmentView draws the symbol at
-    // the placeholder's NATURAL position (bottom at text baseline) rather than the shifted
-    // position, producing a `descent`-point upward shift. Fix: store baselineOffset in
-    // AttachmentAttribute and compensate in AttachmentView.draw(symbol:in:).
-    -typographicBounds(in: environment).descent
+    switch displayStyle {
+    case .inline:
+      // Shift the placeholder image DOWN by `descent` so that the math formula's TeX baseline
+      // (rendered at `ascent` from the canvas top, i.e. `descent` from the canvas bottom)
+      // aligns with surrounding text. AttachmentView must mirror this offset when drawing.
+      -typographicBounds(in: environment).descent
+
+    case .block:
+      // Standalone display math is laid out as its own block, so baseline alignment against
+      // surrounding text should not add extra vertical offset or blank leading.
+      0
+    }
   }
 
   func sizeThatFits(_ proposal: ProposedViewSize, in environment: TextEnvironmentValues) -> CGSize {

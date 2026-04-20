@@ -48,7 +48,13 @@ struct AttachmentView: View {
             runIndex: runIndex
           )
 
-          context.draw(symbol, in: run.typographicBounds.rect)
+          context.draw(
+            symbol,
+            in: run.typographicBounds.rect.offsetBy(
+              dx: 0,
+              dy: -run.attachmentBaselineOffset
+            )
+          )
         }
       }
     } symbols: {
